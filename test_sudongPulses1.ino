@@ -78,3 +78,52 @@ void motor_run() {
   delay(speed_motor); //Phase 6
 }
 
+
+
+
+
+/*
+int u = 5;
+int v = 6;
+int w = 7;
+int EN1 = 12;
+int EN2 = 11;
+int f = A0;
+
+int val2 = 6000;
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(115200);
+  pinMode(u, OUTPUT);
+  pinMode(v, OUTPUT);
+  pinMode(w, OUTPUT);
+  pinMode(EN1, OUTPUT);
+  pinMode(EN2, OUTPUT);
+  pinMode(f, INPUT);
+  digitalWrite(u, LOW);
+  digitalWrite(v, LOW);
+  digitalWrite(w, LOW);
+  digitalWrite(EN1, HIGH);
+  digitalWrite(EN2, HIGH);
+  digitalWrite(w, HIGH);
+  delayMicroseconds(val2);
+  digitalWrite(u, HIGH);
+}
+
+void loop() {
+  delayMicroseconds(val2);
+  digitalWrite(v, HIGH);
+  digitalWrite(w, LOW);
+  delayMicroseconds(val2);
+  digitalWrite(w, HIGH);
+  digitalWrite(u, LOW);
+  delayMicroseconds(val2);  
+  digitalWrite(u, HIGH);
+  digitalWrite(v, LOW);
+  if (val2 > 2000) {
+    val2 -= 10;
+    Serial.println(val2);
+  }
+}
+*/
