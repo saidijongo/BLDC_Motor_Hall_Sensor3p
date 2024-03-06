@@ -1,0 +1,28 @@
+BLDC Motor:
+
+Pulse control wires U, V, and W:
+Yellow (U) connected to OUT1 of L298 driver 1.
+Blue (V) connected to OUT3 of L298 driver 1.
+Green (W) connected to OUT1 of L298 driver 2.
+Hall sensor wires:
+Connected directly to Arduino pins 9, 10, and 11.
+Power wires:
+Connected to Arduino's 5V and GND.
+L298 H-Bridge Drivers:
+
+Driver 1:
+IN1 and IN3 are connected to Arduino pins in_A and in_C, respectively.
+ENABLE ENA and ENABLE ENB are connected to Arduino pins en_A and en_B, respectively.
+Driver 2:
+IN1 is connected to Arduino pin in_B.
+ENABLE ENA is connected to Arduino pin en_C.
+Arduino Uno:
+
+Pins:
+en_A (EN1) = 2
+in_A (IN1) = 3
+en_B (EN2) = 4
+in_B (IN2) = 5
+en_C (EN3) = 7
+in_C (IN3) = 8
+Hall sensor wires connected to pins 9, 10, and 11.
