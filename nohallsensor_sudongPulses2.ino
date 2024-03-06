@@ -1,3 +1,6 @@
+//used two H-bridge drivers, L298N, 
+//Yellow U - M1/IN1 ENA; Blue V - M3/IN3 ENB [Driver1]
+//Green W - M1/IN ENA [Driver 2]
 
 const byte en_A = 2;
 const byte in_A = 3;
