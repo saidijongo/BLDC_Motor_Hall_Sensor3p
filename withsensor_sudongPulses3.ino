@@ -1,5 +1,4 @@
-
-//Motor control pins
+// Define motor control pins
 const byte en_A = 2;
 const byte in_A1 = 3;
 const byte in_A2 = 5;
@@ -7,12 +6,12 @@ const byte en_B = 4;
 const byte in_B1 = 7;
 const byte in_B2 = 8;
 
-//Hall sensor pins
+// Define Hall sensor pins
 const byte hall_U = 9;
 const byte hall_V = 10;
 const byte hall_W = 11;
 
-// Serial command constants
+// Define serial command constants
 const char CMD_CW = 'C';
 const char CMD_CCW = 'W';
 const char CMD_STOP = 'S';
@@ -42,7 +41,6 @@ void loop() {
   // Check if serial data is available
   if (Serial.available() > 0) {
     char command = Serial.read();
-    // Execute command based on received serial data
     switch (command) {
       case CMD_CW:
         Serial.print("CW");
@@ -53,6 +51,7 @@ void loop() {
         motorCCW();
         break;
       case CMD_STOP:
+        Serial.print("STOP");
         motorStop();
         break;
       default:
@@ -65,28 +64,28 @@ void motorCW() {
   // Rotate motor clockwise
   digitalWrite(in_A1, HIGH);
   digitalWrite(in_A2, LOW);
-  analogWrite(en_A, 255); 
+  digitalWrite(en_A, 255); 
   digitalWrite(in_B1, HIGH);
   digitalWrite(in_B2, LOW);
-  analogWrite(en_B, 255); 
+  digitalWrite(en_B, 255); 
 }
 
 void motorCCW() {
   // Rotate motor counter-clockwise
   digitalWrite(in_A1, LOW);
   digitalWrite(in_A2, HIGH);
-  analogWrite(en_A, 255); 
+  digitalWrite(en_A, 255); 
   digitalWrite(in_B1, LOW);
   digitalWrite(in_B2, HIGH);
-  analogWrite(en_B, 255); 
+  digitalWrite(en_B, 255); 
 }
 
 void motorStop() {
   // Stop the motor
   digitalWrite(in_A1, LOW);
   digitalWrite(in_A2, LOW);
-  analogWrite(en_A, 0);
+  digitalWrite(en_A, 0);
   digitalWrite(in_B1, LOW);
   digitalWrite(in_B2, LOW);
-  analogWrite(en_B, 0);
+  digitalWrite(en_B, 0);
 }
