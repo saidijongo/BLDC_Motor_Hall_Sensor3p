@@ -5,3 +5,5 @@ This is a test project
 hall_U = 0x9
 hall_V = 0xA
 hall_W = 0xB
+
+#https://www.digikey.kr/ko/articles/an-introduction-to-brushless-dc-motor-control
