@@ -7,3 +7,4 @@ hall_V = 0xA
 hall_W = 0xB
 
 #https://www.digikey.kr/ko/articles/an-introduction-to-brushless-dc-motor-control
+https://forum.arduino.cc/t/zs-x11h-bldc-motor-driver-arduino-gnd-connection/1097421
