@@ -12,4 +12,6 @@ https://forum.arduino.cc/t/zs-x11h-bldc-motor-driver-arduino-gnd-connection/1097
 Uno_BLDC ESC
 https://simple-circuit.com/arduino-sensorless-bldc-motor-controller-esc/
 https://github.com/vedderb/vesc_tool
+https://simple-circuit.com/arduino-bldc-brushless-dc-motor-control/
+https://forum.arduino.cc/t/bldc-motor-control-with-arduino/446717
 
