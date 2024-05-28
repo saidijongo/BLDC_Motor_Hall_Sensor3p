@@ -15,3 +15,5 @@ https://github.com/vedderb/vesc_tool
 https://simple-circuit.com/arduino-bldc-brushless-dc-motor-control/
 https://forum.arduino.cc/t/bldc-motor-control-with-arduino/446717
 
+https://resources.altium.com/p/build-advanced-brushless-motor-controller
+
