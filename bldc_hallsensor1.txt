@@ -1,0 +1,197 @@
+### Detailed Tutorial: Arduino Sensored BLDC Motor Control Code
+
+#### Overview
+
+This tutorial will walk you through the provided code for controlling a sensored BLDC (Brushless DC) motor using an Arduino Uno. We'll explain how the registers, timers, and ports are configured and why they are set that way. We'll also break down the hexadecimal values used and provide a comparison with other microcontrollers like the STM32 series.
+
+#### Code Breakdown
+
+##### Global Variables
+
+```cpp
+byte motor_speed, bldc_step, pwm_pin = 2;
+```
+- **motor_speed**: Holds the speed value of the motor, read from the ADC.
+- **bldc_step**: Holds the current step of the BLDC motor based on hall sensor input.
+- **pwm_pin**: Pin used for PWM control, initially set to pin 2.
+
+##### Setup Function
+
+```cpp
+void setup() {
+  DDRD  |= 0xFC;                     // Configure pins 2, 3, 4, 5, 6 and 7 as outputs
+  PCICR  = 1;                        // Enable pin change interrupt for pins 8 to 13
+  PCMSK0 = 7;                        // Enable pin change interrupt for pins 8, 9 and 10
+  // Timer2 configuration
+  TCCR2A = 0;
+  TCCR2B = 2;                        // Timer2 prescaler = 1/8 (Timer2 clock = 2MHz)
+  TCNT2  = 0;                        // Timer2 preload value = 0
+  // ADC module configuration
+  ADMUX  = 0x60;                     // Configure ADC module and select channel 0
+  ADCSRA = 0x84;                     // Enable ADC module with 16 division factor (ADC clock = 1MHz)
+  // BLDC motor first move
+  bldc_step = PINB & 7;              // Read hall effect sensors status (PINB: read from PORTB which is arduino pins 8..13)
+  bldc_move();                       // Move the BLDC motor (first move)
+}
+```
+
+1. **Configuring Output Pins:**
+   ```cpp
+   DDRD  |= 0xFC;
+   ```
+   - **DDRD** is the Data Direction Register for port D.
+   - `0xFC` in binary is `1111 1100`.
+   - This sets pins 2 to 7 as outputs (1) and pins 0 and 1 as inputs (0).
+
+2. **Enable Pin Change Interrupt:**
+   ```cpp
+   PCICR  = 1;
+   PCMSK0 = 7;
+   ```
+   - **PCICR** (Pin Change Interrupt Control Register) enables pin change interrupts. Setting it to `1` enables interrupts for pins 8 to 13.
+   - **PCMSK0** (Pin Change Mask Register 0) sets which specific pins (within 8 to 13) will generate an interrupt. `7` in binary is `0000 0111`, enabling interrupts for pins 8, 9, and 10.
+
+3. **Timer2 Configuration:**
+   ```cpp
+   TCCR2A = 0;
+   TCCR2B = 2;
+   TCNT2  = 0;
+   ```
+   - **TCCR2A** (Timer/Counter Control Register A) is set to `0` (no special modes).
+   - **TCCR2B** (Timer/Counter Control Register B) is set to `2`, which corresponds to a prescaler of 8 (dividing the clock by 8).
+   - **TCNT2** (Timer/Counter Register) is initialized to `0`.
+
+4. **ADC Configuration:**
+   ```cpp
+   ADMUX  = 0x60;
+   ADCSRA = 0x84;
+   ```
+   - **ADMUX** (ADC Multiplexer Selection Register) set to `0x60`:
+     - `0x60` in binary: `0110 0000`.
+     - `0110` selects the reference voltage and left-adjusts the ADC result.
+   - **ADCSRA** (ADC Control and Status Register A) set to `0x84`:
+     - `0x84` in binary: `1000 0100`.
+     - `1` enables the ADC and `100` sets the prescaler to 16.
+
+5. **Initial BLDC Motor Move:**
+   ```cpp
+   bldc_step = PINB & 7;
+   bldc_move();
+   ```
+   - Reads the hall effect sensor status from pins 8 to 10 (`PINB & 7` extracts the lower 3 bits of `PINB`).
+   - Calls `bldc_move()` to execute the first motor movement.
+
+##### Interrupt Service Routine (ISR)
+
+```cpp
+ISR (PCINT0_vect){
+  bldc_step = PINB & 7;
+  bldc_move();
+}
+```
+- **ISR** for pin change interrupts on pins 8 to 13.
+- Reads the hall effect sensor status and calls `bldc_move()`.
+
+##### BLDC Motor Move Function
+
+```cpp
+void bldc_move() {
+  switch(bldc_step) {
+    case 1:
+      PORTD = 0x48;
+      pwm_pin = 2;
+      break;
+    case 2:
+      PORTD = 0x24;
+      pwm_pin = 4;
+      break;
+    case 3:
+      PORTD = 0x60;
+      pwm_pin = 4;
+      break;
+    case 4:
+      PORTD = 0x90;
+      pwm_pin = 6;
+      break;
+    case 5:
+      PORTD = 0x18;
+      pwm_pin = 2;
+      break;
+    case 6:
+      PORTD = 0x84;
+      pwm_pin = 6;
+      break;
+    default:
+      PORTD = 0;
+      break;
+  }
+}
+```
+- Controls the BLDC motor by setting `PORTD` based on `bldc_step`.
+- `pwm_pin` is set accordingly for software PWM control.
+
+##### Main Loop
+
+```cpp
+void loop() {
+  ADCSRA |= 1 << ADSC;               // Start conversion
+  while(ADCSRA & 0x40);              // Wait for conversion complete
+  motor_speed = ADCH;                // Read ADC data (8 bits)
+  // Software PWM
+  if(motor_speed < 250) {
+    while(TCNT2 < motor_speed);
+    digitalWrite(pwm_pin, LOW);
+  }
+  if(motor_speed > 0) {
+    while(TCNT2 >= motor_speed);
+    digitalWrite(pwm_pin, HIGH);
+  }
+}
+```
+- Starts ADC conversion and waits for it to complete.
+- Reads the 8-bit result from the ADC.
+- Uses software PWM to control the motor speed based on the ADC result.
+
+### Hexadecimal to Decimal and Binary Conversion
+
+1. **0xFC** (Hexadecimal to Binary and Decimal):
+   - Binary: `1111 1100`
+   - Decimal: `252`
+
+2. **0x60** (Hexadecimal to Binary and Decimal):
+   - Binary: `0110 0000`
+   - Decimal: `96`
+
+3. **0x84** (Hexadecimal to Binary and Decimal):
+   - Binary: `1000 0100`
+   - Decimal: `132`
+
+### Comparison: Arduino Uno vs STM32
+
+**Arduino Uno:**
+- **Microcontroller:** ATmega328P
+- **Clock Speed:** 16 MHz
+- **Memory:**
+  - Flash: 32 KB
+  - SRAM: 2 KB
+  - EEPROM: 1 KB
+- **GPIO Pins:** 14 digital, 6 analog
+
+**STM32 (e.g., STM32F103):**
+- **Microcontroller:** ARM Cortex-M3
+- **Clock Speed:** Up to 72 MHz
+- **Memory:**
+  - Flash: 64-512 KB
+  - SRAM: 20 KB
+- **GPIO Pins:** 37 (STM32F103C8T6) up to 114 (STM32F103ZET6)
+- **Additional Features:**
+  - More advanced timers
+  - More ADC channels with higher resolution
+  - Communication interfaces like CAN, I2C, SPI, USART
+
+### Summary
+
+- **Registers and Ports:** The code configures DDRD, PCICR, PCMSK0, TCCR2A, TCCR2B, TCNT2, ADMUX, and ADCSRA for BLDC control.
+- **Hexadecimal Values:** Converted to binary and decimal for better understanding.
+- **BLDC Control Logic:** Uses hall effect sensor inputs to determine motor steps and adjusts PWM for speed control.
+- **Microcontroller Comparison:** Highlights the differences between Arduino Uno and more advanced STM32 MCUs.
