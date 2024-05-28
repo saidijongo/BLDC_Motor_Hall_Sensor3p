@@ -1,5 +1,6 @@
 # BLDC_Motor_Hall_Sensor3p
 Controlling Brushless DC motor (MU,MV,MW) with Hall sensor (HU, HV,HW) using arduino (MCU)
+https://www.integrasources.com/blog/bldc-motor-controller-design-principles/#:~:text=DC%20motor%20controller.-,BLDC%20Motor%20Controller%20Circuit%20Design,or%20three%2Dphase%20power%20systems.
 
 This is a test project
 hall_U = 0x9
